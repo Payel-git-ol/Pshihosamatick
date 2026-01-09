@@ -5,3 +5,9 @@ interface Platform {
 }
 
 expect fun getPlatform(): Platform
+
+enum class Platforms {
+    ANDROID,
+    IOS,
+    DESKTOP
+}

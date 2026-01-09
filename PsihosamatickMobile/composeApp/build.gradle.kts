@@ -14,7 +14,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -24,24 +24,53 @@ kotlin {
             isStatic = true
         }
     }
-    
-    sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+
+    kotlin {
+        sourceSets {
+            val commonMain by getting {
+                dependencies {
+                    implementation(compose.runtime)
+                    implementation(compose.foundation)
+                    implementation(compose.material3)
+                    implementation(compose.material)
+                    implementation(compose.ui)
+                    implementation(compose.components.resources)
+                    implementation(compose.components.uiToolingPreview)
+                    implementation(compose.materialIconsExtended)
+
+                    // Библиотека Cupertino
+                    implementation("io.github.schott12521:cupertino:2.0.8")
+                    implementation("io.github.schott12521:cupertino-icons-extended:2.0.8")
+
+
+                    // Lifecycle
+                    implementation(libs.androidx.lifecycle.viewmodelCompose)
+                    implementation(libs.androidx.lifecycle.runtimeCompose)
+
+                    // Ktor Core
+                    implementation("io.ktor:ktor-client-core:2.3.12")
+                    implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+                    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+
+                    // Navigation (KMP версия)
+                    implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+                }
+            }
+
+            val androidMain by getting {
+                dependencies {
+                    implementation(compose.preview)
+                    implementation(libs.androidx.activity.compose)
+                    implementation("io.ktor:ktor-client-okhttp:2.3.12") // Движок только тут
+                }
+            }
+
+            val iosMain by creating {
+                dependsOn(commonMain)
+                dependencies {
+                    implementation("io.ktor:ktor-client-darwin:2.3.12") // Движок для iOS
+                }
+            }
         }
     }
 }
